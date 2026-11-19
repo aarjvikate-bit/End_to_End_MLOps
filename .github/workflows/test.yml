@@ -1,19 +1,27 @@
 
-name: MLOps CI
+
+name: MLOps CI and Docker
 
 on: [push, pull_request]
 
 jobs:
-  test:
+  test-and-build:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+    steps:
+      - name: Get Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - run: pip install pytest
+      - name: Install Pytest
+        run: pip install pytest
 
-      - run: pytest test_ci.py -v
+      - name: Run Tests
+        run: pytest test_ci.py -v
 
+      - name: Build Docker Image
+        run: docker build -t student-performance-ml .
